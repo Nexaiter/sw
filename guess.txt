@@ -1,0 +1,286 @@
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(32,16,2); 
+
+int button[] = {2, 3, 4, 5}; 
+int ledpin[] = {8, 9, 10, 11};  
+int turn = 0;  
+int buttonstate = 0;  
+int randomArray[50];
+int inputArray[50];
+int highscore = 0;
+int MyScore;
+
+
+void setup() 
+{
+ lcd.init();
+ lcd.begin(16, 2);
+ lcd.clear();
+ lcd.setCursor(0, 1);
+ lcd.print("Your Score: 0");
+ lcd.setCursor(0, 0);
+ lcd.print("High Score: 0");
+
+ for(int x=0; x<4; x++)  
+ {
+   pinMode(ledpin[x], OUTPUT);
+ }
+  
+ for(int x=0; x<4; x++) 
+ {
+   pinMode(button[x],INPUT);  
+   digitalWrite(button[x], HIGH); 
+ }
+
+ randomSeed(analogRead(0)); 
+ for (int i = 0; i < 6; i++) {
+    
+     if (i==0 || i==2)
+     {
+       digitalWrite(ledpin[0], HIGH);
+     }
+     if (i==1 || i==3 )
+     {
+       digitalWrite(ledpin[1], HIGH);
+     }
+     if (i==4 || i==5)
+     {
+       digitalWrite(ledpin[2], HIGH);
+     }  
+     if (i==6)
+     {   
+       digitalWrite(ledpin[3], HIGH);
+     }
+     delay(25);
+     digitalWrite(ledpin[0], LOW);
+     digitalWrite(ledpin[1], LOW);
+     digitalWrite(ledpin[2], LOW);
+     digitalWrite(ledpin[3], LOW);
+     delay(25);
+    }
+  delay(1000);
+}
+ 
+void loop() 
+{   
+  for (int y=0; y<=2; y++)
+  {
+    digitalWrite(ledpin[0], HIGH);
+    digitalWrite(ledpin[1], HIGH);
+    digitalWrite(ledpin[2], HIGH);
+    digitalWrite(ledpin[3], HIGH);
+  
+    
+    digitalWrite(ledpin[0], LOW);
+    digitalWrite(ledpin[1], LOW);
+    digitalWrite(ledpin[2], LOW);
+    digitalWrite(ledpin[3], LOW);
+    delay(1000);
+  
+    for (int y=turn; y <= turn; y++) 
+    { 
+      Serial.println(""); 
+      Serial.print("Turn: ");
+      Serial.print(y);
+      Serial.println("");
+      lcd.clear();
+ MyScore=y;
+ lcd.setCursor(0, 1);  
+ lcd.print("Your Score: ");
+ lcd.setCursor(12, 1); 
+ lcd.print(MyScore);
+ if(MyScore > highscore) {
+ highscore = y;
+ }
+ lcd.setCursor(0, 0);
+ lcd.print("High Score: " + (String)(highscore));
+ Serial.print(y);
+ Serial.println("");
+ delay(1000);
+      randomArray[y] = random(1, 5);
+      for (int x=0; x <= turn; x++)
+      {
+        Serial.print(randomArray[x]);
+      
+        for(int y=0; y<4; y++)
+        {
+      
+          if (randomArray[x] == 1 && ledpin[y] == 8) 
+          {  
+            digitalWrite(ledpin[y], HIGH);
+          
+            delay(400);
+            digitalWrite(ledpin[y], LOW);
+            delay(100);
+          }
+
+          if (randomArray[x] == 2 && ledpin[y] == 9) 
+          {
+            digitalWrite(ledpin[y], HIGH);
+           
+            delay(400);
+            digitalWrite(ledpin[y], LOW);
+            delay(100);
+          }
+  
+          if (randomArray[x] == 3 && ledpin[y] == 10) 
+          {
+            digitalWrite(ledpin[y], HIGH);
+            
+            delay(400);
+            digitalWrite(ledpin[y], LOW);
+            delay(100);
+          }
+
+          if (randomArray[x] == 4 && ledpin[y] == 11) 
+          {
+            digitalWrite(ledpin[y], HIGH);
+           
+            delay(400);
+            digitalWrite(ledpin[y], LOW);
+            delay(100);
+          }
+        }
+      }
+    }
+    input();
+    
+  }
+  
+  
+}
+ 
+ 
+ 
+void input() { 
+
+  for (int x=0; x <= turn;)
+  { 
+
+    for(int y=0; y<4; y++)
+    {
+      
+      buttonstate = digitalRead(button[y]);
+    
+      if (buttonstate == LOW && button[y] == 2)
+      { 
+        digitalWrite(ledpin[0], HIGH);
+        
+        delay(200);
+        digitalWrite(ledpin[0], LOW);
+        inputArray[x] = 1;
+        delay(250);
+        Serial.print(" ");
+        Serial.print(1);
+        if (inputArray[x] != randomArray[x]) { 
+          fail();                              
+        }                                      
+        x++;
+      }
+       if (buttonstate == LOW && button[y] == 3)
+      {
+        digitalWrite(ledpin[1], HIGH);
+        
+        delay(200);
+        digitalWrite(ledpin[1], LOW);
+        inputArray[x] = 2;
+        delay(250);
+        Serial.print(" ");
+        Serial.print(2);
+        if (inputArray[x] != randomArray[x]) {
+          fail();
+        }
+        x++;
+      }
+
+      if (buttonstate == LOW && button[y] == 4)
+      {
+        digitalWrite(ledpin[2], HIGH);
+       
+        delay(200);
+        digitalWrite(ledpin[2], LOW);
+        inputArray[x] = 3;
+        delay(250);
+        Serial.print(" ");
+        Serial.print(3);
+        if (inputArray[x] != randomArray[x]) {
+          fail();
+        }
+        x++;
+      }
+
+      if (buttonstate == LOW && button[y] == 5)
+      {
+        digitalWrite(ledpin[3], HIGH);
+        
+        delay(200);
+        digitalWrite(ledpin[3], LOW);
+        inputArray[x] = 4;
+        delay(250);
+        Serial.print(" ");
+        Serial.print(4);
+        if (inputArray[x] != randomArray[x]) 
+        {
+          fail();
+        }
+        x++;
+      }
+    }
+  }
+  delay(500);
+  turn++; 
+}
+
+void fail() { 
+ 
+  for (int y=0; y<=3; y++)
+  { 
+    
+    digitalWrite(ledpin[0], HIGH);
+    digitalWrite(ledpin[1], HIGH);
+    digitalWrite(ledpin[2], HIGH);
+    digitalWrite(ledpin[3], HIGH);
+   
+    delay(200);
+    digitalWrite(ledpin[0], LOW);
+    digitalWrite(ledpin[1], LOW);
+    digitalWrite(ledpin[2], LOW);
+    digitalWrite(ledpin[3], LOW);
+   
+    delay(200);
+    lcd.clear();
+ lcd.setCursor(0, 0);
+ lcd.print("Game Over");
+ }
+ delay(2000);
+ lcd.clear();
+ lcd.setCursor(0, 0);
+ lcd.print("High: " + (String) (highscore));
+ 
+ lcd.setCursor(9, 0);
+ lcd.print("You: ");
+ lcd.setCursor(14, 0);
+ lcd.print(MyScore);
+ 
+ lcd.setCursor(0, 1);
+ lcd.print("<-Press to play again!");
+ {
+
+ while (digitalRead(button[0]) > 0 &&digitalRead(button[1]) > 0 && digitalRead(button[2]) > 0 && digitalRead(button[3]) > 0 ){
+digitalWrite(ledpin[0], HIGH);
+digitalWrite(ledpin[1], HIGH);
+digitalWrite(ledpin[2], HIGH);
+digitalWrite(ledpin[3], HIGH);
+delay(100);
+digitalWrite(ledpin[0], LOW);
+digitalWrite(ledpin[1], LOW);
+digitalWrite(ledpin[2], LOW);
+digitalWrite(ledpin[3], LOW);
+delay(100);
+ }
+ delay(1000);
+  
+  turn = -1; 
+}
+}
