@@ -1,9 +1,10 @@
-#include <LiquidCrystal_I2C.h>
+#include <LCD_I2C.h>
 
-LiquidCrystal_I2C lcd(32,16,2); 
+LCD_I2C lcd(0x3F, 16, 2); 
+
 
 int button[] = {2, 3, 4, 5}; 
-int ledpin[] = {8, 9, 10, 11};  
+int ledpin[] = {9, 10, 11, 12};  
 int turn = 0;  
 int buttonstate = 0;  
 int randomArray[50];
@@ -11,29 +12,28 @@ int inputArray[50];
 int highscore = 0;
 int MyScore;
 
-
 void setup() 
 {
- lcd.init();
- lcd.begin(16, 2);
+ lcd.begin();
  lcd.clear();
  lcd.setCursor(0, 1);
  lcd.print("Your Score: 0");
  lcd.setCursor(0, 0);
  lcd.print("High Score: 0");
 
- for(int x=0; x<4; x++)  
+for(int x=0; x<4; x++)  
  {
    pinMode(ledpin[x], OUTPUT);
  }
   
  for(int x=0; x<4; x++) 
  {
-   pinMode(button[x],INPUT);  
+   pinMode(button[x],INPUT_PULLUP);  
    digitalWrite(button[x], HIGH); 
  }
+ 
+randomSeed(analogRead(0)); 
 
- randomSeed(analogRead(0)); 
  for (int i = 0; i < 6; i++) {
     
      if (i==0 || i==2)
@@ -61,10 +61,11 @@ void setup()
     }
   delay(1000);
 }
- 
-void loop() 
-{   
-  for (int y=0; y<=2; y++)
+
+
+
+void loop() {
+for (int y=0; y<=2; y++)
   {
     digitalWrite(ledpin[0], HIGH);
     digitalWrite(ledpin[1], HIGH);
@@ -106,7 +107,7 @@ void loop()
         for(int y=0; y<4; y++)
         {
       
-          if (randomArray[x] == 1 && ledpin[y] == 8) 
+          if (randomArray[x] == 1 && ledpin[y] == 9) 
           {  
             digitalWrite(ledpin[y], HIGH);
           
@@ -115,7 +116,7 @@ void loop()
             delay(100);
           }
 
-          if (randomArray[x] == 2 && ledpin[y] == 9) 
+          if (randomArray[x] == 2 && ledpin[y] == 10) 
           {
             digitalWrite(ledpin[y], HIGH);
            
@@ -124,7 +125,7 @@ void loop()
             delay(100);
           }
   
-          if (randomArray[x] == 3 && ledpin[y] == 10) 
+          if (randomArray[x] == 3 && ledpin[y] == 11) 
           {
             digitalWrite(ledpin[y], HIGH);
             
@@ -133,7 +134,7 @@ void loop()
             delay(100);
           }
 
-          if (randomArray[x] == 4 && ledpin[y] == 11) 
+          if (randomArray[x] == 4 && ledpin[y] == 12) 
           {
             digitalWrite(ledpin[y], HIGH);
            
@@ -147,13 +148,9 @@ void loop()
     input();
     
   }
-  
-  
-}
- 
- 
- 
-void input() { 
+  }
+
+  void input() { 
 
   for (int x=0; x <= turn;)
   { 
